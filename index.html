@@ -23,8 +23,8 @@
     <img src="./assets/hero-img-upscaled.jpeg" />
   </div>
 
-  <!-- Content Sections with IDs for Navigation -->
-  <h1 id="job-listings">Job Listings</h1>
+  <h1 id="job-listings">One Click Away from Your <span class="underline">Next Big Break!</span></h1>
+
 
   <!-- Job Listings Section -->
   <div class="state-container">
@@ -126,10 +126,8 @@
       const navLinks = document.querySelector('.nav-links');
       const menuIcon = document.querySelector('.menu-icon');
       
-      // Toggle the visibility of the navigation links
       navLinks.classList.toggle('active');
       
-      // Toggle the icon between ☰ and ✖
       if (navLinks.classList.contains('active')) {
         menuIcon.textContent = '✖'; 
       } else {

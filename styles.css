@@ -1,24 +1,24 @@
 /* Imports */
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap');
 
-/* Project Name Font */
-.project-name {
-    font-family: "Rubik Glitch", system-ui;
-    font-weight: 400;
-    font-style: normal;
-}
-
 /* General Styles */
 body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 20px;
-  background-color: rgb(249, 247, 238); 
+  background-color: rgb(249, 247, 238);
   color: #333;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.project-name {
+  font-family: "Rubik Glitch", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.5rem; 
+  margin: 0;
+}
 
 /* Header */
 h1 {
@@ -26,6 +26,25 @@ h1 {
   margin-bottom: 30px;
   font-size: 2.5rem;
   color: #343a40;
+}
+
+/* Underline Effect */
+.underline {
+  position: relative;
+  display: inline-block;
+}
+
+.underline:after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px; 
+  background-color: #ec724b;
+  transform: scaleX(1); 
+  transform-origin: bottom right;
+  transition: none; 
 }
 
 /* Navbar Styles */
@@ -43,11 +62,6 @@ nav {
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.project-name {
-  margin: 0;
-  font-size: 1.5rem;
 }
 
 .nav-links {
@@ -90,12 +104,12 @@ nav {
 }
 
 .menu-icon {
-  display: none; /* Hide menu icon on larger screens */
+  display: none; 
 }
 
 @media (max-width: 768px) {
   .nav-links {
-    display: none; /* Hide links on small screens */
+    display: none; 
     flex-direction: column;
   }
 
@@ -122,7 +136,7 @@ nav {
 /* Hero Image */
 .hero-img {
   width: 100%;
-  max-width: 800px; /* Or the max-width you prefer */
+  max-width: 800px; 
   margin: 20px 0;
   overflow: hidden;
 }
@@ -131,19 +145,27 @@ nav {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: contain; /* Ensures image covers the container without distortion */
+  object-fit: contain; 
 }
 
 /* Media Queries for Mobile Responsiveness */
 @media (max-width: 768px) {
   .hero-img {
-    margin: 10px 0; /* Adjust margin for smaller screens */
+    margin: 10px 0; 
+  }
+
+  h1 {
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-img {
-    margin: 5px 0; /* Further adjust margin for extra-small screens */
+    margin: 5px 0; 
+  }
+
+  h1 {
+    font-size: 1.5rem; 
   }
 }
 
@@ -310,7 +332,7 @@ nav {
   display: flex;
   gap: 15px;
   margin-top: 10px;
-  justify-content: left;
+  justify-content: flex-start;
 }
 
 .checkboxes input[type="checkbox"] {
@@ -340,10 +362,9 @@ select:focus {
 }
 
 /* Skeleton Loader */
-/* General container for results */
 #results {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Flexible grid */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
   gap: 20px;
   width: 100%;
   padding: 20px;
@@ -378,8 +399,8 @@ select:focus {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover; /* Ensures image fits without distortion */
-  max-height: 180px; /* Set a max height for thumbnails */
+  object-fit: cover; 
+  max-height: 180px; 
 }
 
 /* Title below the thumbnail */
@@ -405,7 +426,7 @@ select:focus {
 
 @keyframes shine {
   to {
-      background-position: right -40px top 0;
+    background-position: right -40px top 0;
   }
 }
 
@@ -513,8 +534,38 @@ button:active {
   button {
     width: 100%;
   }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h1#job-listings {
+    font-size: 1.5rem; 
+    white-space: normal; 
+    position: relative;
+    display: inline-block;
+  }
+
+  .underline {
+    display: inline-block;
+    position: relative;
+    text-align: center; 
+    width: fit-content;
+    margin: 0 auto; 
+  }
+
+  .underline:after {
+    content: '';
+    position: absolute;
+    bottom: -2px; 
+    left: 0;
+    width: 100%;
+    height: 2px; 
+    background-color: #ec724b; 
+  }
 }
 
+/* Media Queries for Extra-Small Screens */
 @media (max-width: 480px) {
   .state-container {
     grid-template-columns: 1fr;
@@ -531,5 +582,34 @@ button:active {
 
   .controls {
     gap: 10px;
+  }
+
+  h1 {
+    font-size: 1.5rem; 
+  }
+
+  h1#job-listings {
+    font-size: 1.5rem; 
+  }
+
+  .underline {
+    display: inline-block; 
+    text-align: center; 
+    position: relative; 
+    width: fit-content; 
+    margin: 0 auto; 
+  }
+
+  .underline:after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%; 
+    height: 2px;
+    background-color: #ec724b;
+    transform: scaleX(1); 
+    transform-origin: bottom right;
+    transition: none; 
   }
 }
