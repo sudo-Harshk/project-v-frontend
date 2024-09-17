@@ -286,3 +286,37 @@ document.addEventListener('DOMContentLoaded', () => {
       jobCategories.innerHTML = '<p>Error fetching job listings. Please try again later.</p>';
     });
 });
+
+
+// Toggle between Videos and Jobs
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleVideosButton = document.createElement('button');
+  const toggleJobsButton = document.createElement('button');
+
+  toggleVideosButton.textContent = 'Show Videos';
+  toggleJobsButton.textContent = 'Show Jobs';
+
+  const toggleControls = document.createElement('div');
+  toggleControls.id = 'toggle-controls';
+  toggleControls.appendChild(toggleVideosButton);
+  toggleControls.appendChild(toggleJobsButton);
+
+  document.body.insertBefore(toggleControls, document.querySelector('h1'));
+
+  const videosSection = document.getElementById('video-search').parentElement;
+  const jobsSection = document.getElementById('job-listings').parentElement;
+
+  // Initially show the video section and hide the jobs section
+  videosSection.style.display = 'block';
+  jobsSection.style.display = 'none';
+
+  toggleVideosButton.addEventListener('click', () => {
+    videosSection.style.display = 'block';
+    jobsSection.style.display = 'none';
+  });
+
+  toggleJobsButton.addEventListener('click', () => {
+    videosSection.style.display = 'none';
+    jobsSection.style.display = 'block';
+  });
+});
