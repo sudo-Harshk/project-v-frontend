@@ -1,3 +1,124 @@
+// Load the YouTube Data API client
+function loadClient() {
+  gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY");
+  return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+    .then(function() {
+      console.log("GAPI client loaded for API");
+    }, function(err) {
+      console.error("Error loading GAPI client for API", err);
+    });
+}
+
+// Fetch videos based on selected exam, language, and video type
+function fetchVideos() {
+  const fetchButton = document.querySelector('button');
+  fetchButton.disabled = true; // Disable button while fetching
+
+  const examType = document.getElementById("examSelect").value;
+  if (!examType) {
+    alert("Please select an exam type.");
+    fetchButton.disabled = false; // Re-enable button if there's an issue
+    return;
+  }
+
+  let languageQuery = "";
+  if (document.getElementById("englishLang").checked) {
+    languageQuery += " English";
+  }
+  if (document.getElementById("teluguLang").checked) {
+    languageQuery += " Telugu";
+  }
+
+  let videoTypeQuery = "";
+  if (document.getElementById("examPreparation").checked) {
+    videoTypeQuery += " exam preparation";
+  }
+  if (document.getElementById("crashCourse").checked) {
+    videoTypeQuery += " crash course";
+  }
+  if (document.getElementById("strategy").checked) {
+    videoTypeQuery += " strategy";
+  }
+
+  const resultsElement = document.getElementById('results');
+  resultsElement.innerHTML = ''; // Clear previous results
+
+  // Add skeleton loaders
+  for (let i = 0; i < 5; i++) {
+    resultsElement.appendChild(createSkeletonLoader());
+  }
+
+  // Execute the search
+  execute(examType + videoTypeQuery + languageQuery, fetchButton);
+}
+
+function createSkeletonLoader() {
+  const skeletonLoader = document.createElement('div');
+  skeletonLoader.className = 'result-item skeleton';
+  skeletonLoader.innerHTML = `
+      <div class="skeleton-img"></div>
+      <div class="skeleton-title"></div>
+  `;
+  return skeletonLoader;
+}
+
+function execute(query, fetchButton) {
+  gapi.client.youtube.search.list({
+    "part": "snippet",
+    "maxResults": 25,
+    "q": query
+  })
+  .then(function(response) {
+    displayResults(response.result.items);
+    fetchButton.disabled = false; // Re-enable button after fetching
+  }, function(err) {
+    console.error("Execute error", err);
+    fetchButton.disabled = false; // Re-enable button if error occurs
+  });
+}
+
+function displayResults(videos) {
+  const resultsElement = document.getElementById('results');
+  resultsElement.innerHTML = ''; // Clear skeleton loaders
+
+  if (videos.length === 0) {
+    resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
+    return;
+  }
+
+  videos.forEach(video => {
+    if (video.id && video.id.videoId) {
+      const listItem = document.createElement('div');
+      listItem.className = 'result-item'; // Same class used by the skeleton loader
+
+      const link = document.createElement('a');
+      link.href = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+      link.target = '_blank';
+
+      const img = document.createElement('img');
+      img.src = video.snippet.thumbnails.medium.url;
+      img.className = 'skeleton-img'; // Same class for consistent image style
+      img.alt = video.snippet.title;
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'title'; // Same class for consistent title style
+      titleDiv.textContent = video.snippet.title;
+
+      link.appendChild(img);
+      link.appendChild(titleDiv);
+      listItem.appendChild(link);
+      resultsElement.appendChild(listItem);
+    }
+  });
+}
+
+// Load the YouTube API
+gapi.load("client", function() {
+  loadClient();
+});
+
+
+// Fetch job listings and display them in the job categories
 document.addEventListener('DOMContentLoaded', () => {
   const states = [
     { slug: 'west-bengal', name: 'West Bengal' },

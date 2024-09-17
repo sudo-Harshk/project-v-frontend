@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Listings</title>
+  <title>Job Listings and Exam Preparation</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Job Listings</h1>
 
+  <!-- Job Listings Section -->
   <div class="state-container">
     <div class="state-column">
       <ul class="state-list"></ul>
@@ -34,7 +35,6 @@
   </div>
 
   <div class="job-categories">
-
     <div class="category" id="latest-jobs">
       <div class="category-header">
         <h2>Latest Jobs</h2>
@@ -59,6 +59,52 @@
     </div>
   </div>
 
+  <!-- YouTube Video Search Section for Exam Preparation -->
+  <h1>Video's Search for Exam Preparation</h1>
+  <div class="controls-container">
+    <div class="main-controls">
+        <div class="controls">
+            <select id="examSelect">
+                <option value="">Select an Exam</option>
+                <option value="UPSC">UPSC - Civil Services</option>
+                <option value="SSC CGL">SSC CGL</option>
+                <option value="IBPS">IBPS - Banking</option>
+                <option value="RRB">RRB - Railways</option>
+            </select>
+            
+            <div class="checkboxes">
+              <input type="checkbox" id="englishLang" checked>
+              <label for="englishLang">English</label>
+              <input type="checkbox" id="teluguLang">
+              <label for="teluguLang">Telugu</label>
+          </div>
+        </div>
+        
+        <div class="controls">
+            <label class="switch">
+                <input type="checkbox" id="examPreparation">
+                <span class="slider round"></span>
+            </label> Exam Preparation
+
+            <label class="switch">
+                <input type="checkbox" id="crashCourse">
+                <span class="slider round"></span>
+            </label> Crash Course
+
+            <label class="switch">
+                <input type="checkbox" id="strategy">
+                <span class="slider round"></span>
+            </label> Strategy
+        </div>
+    </div>
+    <button onclick="fetchVideos()">Fetch Videos</button>
+</div>
+
+
+  <ul id="results" style="list-style: none; padding: 0;"></ul>
+
+  <!-- Include YouTube API and the main script for fetching videos and job listings -->
+  <script src="https://apis.google.com/js/api.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
