@@ -92,8 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
     'Bank Jobs': 'bank-jobs',
   };
 
+  // Show loading message while fetching jobs
+  const jobCategories = document.querySelector('.job-categories');
+  jobCategories.innerHTML = '<p>Loading job listings...</p>';
+
   // Fetch jobs from the API
-  fetch('http://localhost:3000/api/jobs')
+  fetch('https://project-v-backend.onrender.com/api/jobs')
     .then(response => {
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
@@ -104,8 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Fetched Job Data:', data);
 
       const uniqueJobs = new Set();
-
-      // Group jobs by category and remove duplicates
       const groupedJobs = data.reduce((acc, job) => {
         const category = job.category || 'Latest Jobs';
         const uniqueKey = job.title || job.link;
@@ -136,24 +138,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
+      // Clear loading message
+      jobCategories.innerHTML = '';
+
       // Render the jobs in their respective sections
       for (const [category, jobs] of Object.entries(groupedJobs)) {
         const categoryId = categoryMap[category] || category;
         const jobList = document.querySelector(`#${categoryId} .job-list`);
 
         if (jobList) {
+          let jobListHTML = '';
           jobs.forEach(job => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('job-item');
-            listItem.innerHTML = `
-              <div class="job-title">${job.title}</div>
-              <div class="job-date">Published on: ${
-                job.date ? new Date(job.date).toLocaleDateString() : 'Unknown date'
-              }</div>
-              <a href="${job.link}" target="_blank" class="read-more">Read more</a>
-            `;
-            jobList.appendChild(listItem);
+            if (job.title && job.link) {
+              jobListHTML += `
+                <li class="job-item">
+                  <div class="job-title">${job.title}</div>
+                  <div class="job-date">Published on: ${
+                    job.date ? new Date(job.date).toLocaleDateString() : 'Unknown date'
+                  }</div>
+                  <a href="${job.link}" target="_blank" class="read-more">Read more</a>
+                </li>
+              `;
+            } else {
+              console.warn(`Skipping invalid job entry: ${JSON.stringify(job)}`);
+            }
           });
+
+          if (jobListHTML === '') {
+            jobList.innerHTML = '<p>No jobs available at the moment.</p>';
+          } else {
+            jobList.innerHTML = jobListHTML;
+          }
         } else {
           console.warn(`No job list found for category: ${category}`);
         }
@@ -161,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => {
       console.error('Error fetching jobs:', error);
-      const jobCategories = document.querySelector('.job-categories');
       jobCategories.innerHTML = '<p>Error fetching job listings. Please try again later.</p>';
     });
 });
