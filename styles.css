@@ -327,6 +327,20 @@ nav {
   text-decoration: underline;
 }
 
+/* video animation effect */
+
+#video-search {
+    font-size: 50px;
+    display: block;
+    text-align: center;
+    line-height: 100px;
+    height: 100px;
+    margin-top: 10vh;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+
+}
+
 /* YouTube Video Search Section */
 .checkboxes {
   display: flex;
@@ -563,6 +577,12 @@ button:active {
     height: 2px; 
     background-color: #ec724b; 
   }
+  #video-search {
+    font-size: 40px; 
+    line-height: 80px; 
+    height: 80px; 
+    letter-spacing: 8px; 
+  }
 }
 
 /* Media Queries for Extra-Small Screens */
@@ -611,5 +631,11 @@ button:active {
     transform: scaleX(1); 
     transform-origin: bottom right;
     transition: none; 
+  }
+  #video-search {
+    font-size: 30px; 
+    line-height: 60px; 
+    height: 60px; 
+    letter-spacing: 6px; 
   }
 }
