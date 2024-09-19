@@ -20,6 +20,12 @@ body {
   margin: 0;
 }
 
+.project-name a {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+
 /* Header */
 h1 {
   text-align: center;
