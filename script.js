@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'Latest Jobs': 'latest-jobs',
     'Central Jobs': 'central-jobs',
     'Bank Jobs': 'bank-jobs',
-    '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs', 
+    '10th Pass Govt Jobs': 'tenth-pass-govt-jobs', // Changed spaces to hyphens
   };
   
   // Fetch jobs from the API
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Render the jobs in their respective sections
       for (const [category, jobs] of Object.entries(groupedJobs)) {
-        const categoryId = categoryMap[category] || category;
+        const categoryId = categoryMap[category] || category.replace(/ /g, '-').toLowerCase(); // Use hyphens for selectors
         const jobList = document.querySelector(`#${categoryId} .job-list`);
 
         if (jobList) {
