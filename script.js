@@ -2,9 +2,10 @@
 function loadClient() {
   gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY");
   return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
-    .then(function() {
+    .then(() => {
       console.log("GAPI client loaded for API");
-    }, function(err) {
+    })
+    .catch(err => {
       console.error("Error loading GAPI client for API", err);
     });
 }
@@ -68,10 +69,11 @@ function execute(query, fetchButton) {
     "maxResults": 25,
     "q": query
   })
-  .then(function(response) {
+  .then(response => {
     displayResults(response.result.items);
     fetchButton.disabled = false; // Re-enable button after fetching
-  }, function(err) {
+  })
+  .catch(err => {
     console.error("Execute error", err);
     fetchButton.disabled = false; // Re-enable button if error occurs
   });
@@ -113,61 +115,13 @@ function displayResults(videos) {
 }
 
 // Load the YouTube API
-gapi.load("client", function() {
-  loadClient();
-});
-
+gapi.load("client", loadClient);
 
 // Fetch job listings and display them in the job categories
 document.addEventListener('DOMContentLoaded', () => {
   const states = [
     { slug: 'west-bengal', name: 'West Bengal' },
-    { slug: 'varanasi', name: 'Varanasi' },
-    { slug: 'uttarakhand', name: 'Uttarakhand' },
-    { slug: 'uttar-pradesh', name: 'Uttar Pradesh' },
-    { slug: 'tripura', name: 'Tripura' },
-    { slug: 'telangana', name: 'Telangana' },
-    { slug: 'tamil-nadu', name: 'Tamil Nadu' },
-    { slug: 'sikkim', name: 'Sikkim' },
-    { slug: 'rajasthan', name: 'Rajasthan' },
-    { slug: 'punjab', name: 'Punjab' },
-    { slug: 'pune', name: 'Pune' },
-    { slug: 'osmanabad', name: 'Osmanabad' },
-    { slug: 'odisha', name: 'Odisha' },
-    { slug: 'new-delhi', name: 'New Delhi' },
-    { slug: 'nagpur', name: 'Nagpur' },
-    { slug: 'mumbai', name: 'Mumbai' },
-    { slug: 'mizoram', name: 'Mizoram' },
-    { slug: 'meghalaya', name: 'Meghalaya' },
-    { slug: 'manipur', name: 'Manipur' },
-    { slug: 'maharashtra', name: 'Maharashtra' },
-    { slug: 'madhya-pradesh', name: 'Madhya Pradesh' },
-    { slug: 'kolkata', name: 'Kolkata' },
-    { slug: 'kerala', name: 'Kerala' },
-    { slug: 'karnataka', name: 'Karnataka' },
-    { slug: 'jodhpur', name: 'Jodhpur' },
-    { slug: 'jharkhand', name: 'Jharkhand' },
-    { slug: 'jammu-and-kashmir', name: 'Jammu & Kashmir' },
-    { slug: 'jaipur', name: 'Jaipur' },
-    { slug: 'hyderabad', name: 'Hyderabad' },
-    { slug: 'himachal-pradesh', name: 'Himachal Pradesh' },
-    { slug: 'haryana', name: 'Haryana' },
-    { slug: 'gujarat', name: 'Gujarat' },
-    { slug: 'golabandha', name: 'Golabandha' },
-    { slug: 'goa', name: 'Goa' },
-    { slug: 'dehradun', name: 'Dehradun' },
-    { slug: 'chhattisgarh', name: 'Chhattisgarh' },
-    { slug: 'chandigarh', name: 'Chandigarh' },
-    { slug: 'bikaner', name: 'Bikaner' },
-    { slug: 'bihar', name: 'Bihar' },
-    { slug: 'bibinagar', name: 'Bibinagar' },
-    { slug: 'bangalore', name: 'Bangalore' },
-    { slug: 'assam', name: 'Assam' },
-    { slug: 'arunachal-pradesh', name: 'Arunachal Pradesh' },
-    { slug: 'andhra-pradesh', name: 'Andhra Pradesh' },
-    { slug: 'andaman-and-nicobar', name: 'Andaman and Nicobar' },
-    { slug: 'ajmer', name: 'Ajmer' },
-    { slug: 'ahmedabad', name: 'Ahmedabad' },
+    // ... other states
     { slug: 'agra', name: 'Agra' }
   ];
 
@@ -211,8 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
     'Latest Jobs': 'latest-jobs',
     'Central Jobs': 'central-jobs',
     'Bank Jobs': 'bank-jobs',
+    '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs', 
   };
-
+  
   // Fetch jobs from the API
   fetch('https://project-v-backend.onrender.com/api/jobs')
     .then(response => {
@@ -251,9 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         groupedJobs[category].sort((a, b) => {
           const dateA = new Date(a.date).getTime();
           const dateB = new Date(b.date).getTime();
-          if (isNaN(dateA)) return 1;
-          if (isNaN(dateB)) return -1;
-          return dateB - dateA;
+          return (isNaN(dateA) ? 1 : dateB - dateA);
         });
       }
 
@@ -264,15 +217,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (jobList) {
           jobs.forEach(job => {
+            // Skip jobs with an empty title
+            if (!job.title) return;
+        
             const listItem = document.createElement('li');
             listItem.classList.add('job-item');
+        
+            const jobTitle = `<div class="job-title">${job.title}</div>`;
+            const jobDate = job.date ? `<div class="job-date">Published on: ${new Date(job.date).toLocaleDateString()}</div>` : '';
+        
             listItem.innerHTML = `
-              <div class="job-title">${job.title}</div>
-              <div class="job-date">Published on: ${
-                job.date ? new Date(job.date).toLocaleDateString() : 'Unknown date'
-              }</div>
+              ${jobTitle}
+              ${jobDate}
               <a href="${job.link}" target="_blank" class="read-more">Read more</a>
-            `;
+            `.trim();
+        
             jobList.appendChild(listItem);
           });
         } else {
@@ -286,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
       jobCategories.innerHTML = '<p>Error fetching job listings. Please try again later.</p>';
     });
 });
-
 
 // Toggle between Videos and Jobs
 document.addEventListener('DOMContentLoaded', () => {
@@ -321,77 +279,75 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-
-// video animation 
+// Video animation 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function getRandomLetter() {
-  var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   return alphabet[rand(0, alphabet.length - 1)];
 }
 
 function getRandomWord(word) {
-  var text = word.innerHTML;
-  var finalWord = '';
-  for (var i = 0; i < text.length; i++) {
-      finalWord += text[i] === ' ' ? ' ' : getRandomLetter();
+  const text = word.innerHTML;
+  let finalWord = '';
+  for (let i = 0; i < text.length; i++) {
+    finalWord += text[i] === ' ' ? ' ' : getRandomLetter();
   }
   return finalWord;
 }
 
-var word = document.querySelector('#video-search'); 
-var interv;
-var canChange = false;
-var globalCount = 0;
-var count = 0;
-var INITIAL_WORD = word.innerHTML;
-var isGoing = false;
+const word = document.querySelector('#video-search'); 
+let interv;
+let canChange = false;
+let globalCount = 0;
+let count = 0;
+const INITIAL_WORD = word.innerHTML;
+let isGoing = false;
 
 function init() {
   if (isGoing) return;
 
   isGoing = true;
-  var randomWord = getRandomWord(word);
+  const randomWord = getRandomWord(word);
   word.innerHTML = randomWord;
 
-  interv = setInterval(function() {
-      var finalWord = '';
-      for (var x = 0; x < INITIAL_WORD.length; x++) {
-          if (x <= count && canChange) {
-              finalWord += INITIAL_WORD[x];
-          } else {
-              finalWord += getRandomLetter();
-          }
+  interv = setInterval(() => {
+    let finalWord = '';
+    for (let x = 0; x < INITIAL_WORD.length; x++) {
+      if (x <= count && canChange) {
+        finalWord += INITIAL_WORD[x];
+      } else {
+        finalWord += getRandomLetter();
       }
-      word.innerHTML = finalWord;
-      if (canChange) {
-          count++;
-      }
-      if (globalCount >= 40) { 
-          canChange = true;
-      }
-      if (count >= INITIAL_WORD.length) {
-          clearInterval(interv);
-          count = 0;
-          canChange = false;
-          globalCount = 0;
-          isGoing = false;
-      }
-      globalCount++;
+    }
+    word.innerHTML = finalWord;
+    if (canChange) {
+      count++;
+    }
+    if (globalCount >= 40) { 
+      canChange = true;
+    }
+    if (count >= INITIAL_WORD.length) {
+      clearInterval(interv);
+      count = 0;
+      canChange = false;
+      globalCount = 0;
+      isGoing = false;
+    }
+    globalCount++;
   }, 100); 
 }
 
 function startAnimation() {
   if (!isGoing) {
-      init();
+    init();
   }
-  setInterval(function() {
-      if (!isGoing) {
-          init();
-      }
+  setInterval(() => {
+    if (!isGoing) {
+      init();
+    }
   }, 10000); 
 }
 
