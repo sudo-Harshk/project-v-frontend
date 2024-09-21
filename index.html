@@ -75,6 +75,15 @@
       </div>
       <ul class="job-list"></ul>
     </div>
+
+    <!-- New Section for 10th Pass Govt Jobs -->
+    <div class="category" id="tenth-pass-jobs">
+      <div class="category-header">
+        <h2>10th Pass Govt Jobs</h2>
+        <a href="https://allgovernmentjobs.in/10th-pass-govt-jobs" target="_blank" class="view-all-btn">View All 10th Pass Govt Jobs</a>
+      </div>
+      <ul class="job-list" id="tenth-pass-job-list"></ul>
+    </div>
   </div>
 
   <h1 id="video-search">Study Blueprint</h1>
@@ -135,6 +144,27 @@
         menuIcon.textContent = '☰'; 
       }
     }
+
+    async function fetchJobs() {
+      try {
+        const response = await fetch('http://localhost:3000/api/jobs'); // Adjust the URL if necessary
+        const jobs = await response.json();
+
+        const tenthPassJobList = document.getElementById('tenth-pass-job-list');
+
+        jobs.forEach(job => {
+          if (job.category === '10th Pass Govt Jobs') {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${job.link}" target="_blank">${job.title}</a> - ${job.date ? job.date.toLocaleDateString() : 'Date not available'}`;
+            tenthPassJobList.appendChild(li);
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchJobs);
   </script>
 </body>
 </html>

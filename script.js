@@ -370,7 +370,7 @@ function init() {
       if (canChange) {
           count++;
       }
-      if (globalCount >= 40) { // Adjusted for slower animation
+      if (globalCount >= 40) { 
           canChange = true;
       }
       if (count >= INITIAL_WORD.length) {
@@ -381,7 +381,7 @@ function init() {
           isGoing = false;
       }
       globalCount++;
-  }, 100); // Adjusted for slower animation
+  }, 100); 
 }
 
 function startAnimation() {
