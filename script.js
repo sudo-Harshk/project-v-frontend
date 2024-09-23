@@ -212,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'Latest Jobs': 'latest-jobs',
     'Central Jobs': 'central-jobs',
     'Bank Jobs': 'bank-jobs',
-    '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs', 
+    '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs',
+    'Intermediate Jobs': 'intermediate-jobs', 
   };
   
   // Fetch jobs from the API
@@ -261,30 +262,30 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const [category, jobs] of Object.entries(groupedJobs)) {
         const categoryId = categoryMap[category] || category;
         const jobList = document.querySelector(`#${categoryId} .job-list`);
-
+      
         if (jobList) {
           jobs.forEach(job => {
-            // Skip jobs with an empty title
-            if (!job.title) return;
-        
+            // Skip jobs with an empty title or null date
+            if (!job.title || !job.title.trim() || !job.date) return;
+      
             const listItem = document.createElement('li');
             listItem.classList.add('job-item');
-        
+      
             const jobTitle = `<div class="job-title">${job.title}</div>`;
             const jobDate = job.date ? `<div class="job-date">Published on: ${new Date(job.date).toLocaleDateString()}</div>` : '';
-        
+      
             listItem.innerHTML = `
               ${jobTitle}
               ${jobDate}
               <a href="${job.link}" target="_blank" class="read-more">Read more</a>
             `.trim();
-        
+      
             jobList.appendChild(listItem);
           });
         } else {
           console.warn(`No job list found for category: ${category}`);
         }
-      }
+      }      
     })
     .catch(error => {
       console.error('Error fetching jobs:', error);
@@ -397,5 +398,7 @@ function startAnimation() {
     }
   }, 10000); 
 }
+
+console.log('Fetched Job Data:', data);
 
 startAnimation();
