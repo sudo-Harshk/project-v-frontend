@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { slug: 'karnataka', name: 'Karnataka' },
     { slug: 'jodhpur', name: 'Jodhpur' },
     { slug: 'jharkhand', name: 'Jharkhand' },
-    { slug: 'jammu-and-kashmir', name: 'Jammu & Kashmir' },
+    { slug: 'jammu-kashmir', name: 'Jammu & Kashmir' },
     { slug: 'jaipur', name: 'Jaipur' },
     { slug: 'hyderabad', name: 'Hyderabad' },
     { slug: 'himachal-pradesh', name: 'Himachal Pradesh' },
@@ -166,12 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { slug: 'assam', name: 'Assam' },
     { slug: 'arunachal-pradesh', name: 'Arunachal Pradesh' },
     { slug: 'andhra-pradesh', name: 'Andhra Pradesh' },
-    { slug: 'andaman-and-nicobar', name: 'Andaman and Nicobar' },
+    { slug: 'andaman-nicobar', name: 'Andaman and Nicobar' },
     { slug: 'ajmer', name: 'Ajmer' },
     { slug: 'ahmedabad', name: 'Ahmedabad' },
-    { slug: 'agra', name: 'Agra' },
+    { slug: 'agra', name: 'Agra' }
   ];
-  
 
   // Sorting states alphabetically
   states.sort((a, b) => a.name.localeCompare(b.name));
@@ -213,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'Latest Jobs': 'latest-jobs',
     'Central Jobs': 'central-jobs',
     'Bank Jobs': 'bank-jobs',
-    '10th Pass Govt Jobs': 'tenth-pass-govt-jobs', // Changed spaces to hyphens
+    '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs', 
   };
   
   // Fetch jobs from the API
@@ -260,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Render the jobs in their respective sections
       for (const [category, jobs] of Object.entries(groupedJobs)) {
-        const categoryId = categoryMap[category] || category.replace(/ /g, '-').toLowerCase(); // Use hyphens for selectors
+        const categoryId = categoryMap[category] || category;
         const jobList = document.querySelector(`#${categoryId} .job-list`);
 
         if (jobList) {
