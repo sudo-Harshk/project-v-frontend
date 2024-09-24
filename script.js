@@ -1,10 +1,4 @@
-function loadClient() {
-  gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY");
-  return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
-    .then(() => console.log("GAPI client loaded for API"))
-    .catch(err => console.error("Error loading GAPI client for API", err));
-}
-
+// Function to fetch videos from your backend API
 function fetchVideos() {
   const fetchButton = document.querySelector('button');
   fetchButton.disabled = true;
@@ -34,6 +28,7 @@ function fetchVideos() {
     videoTypeQuery += " strategy";
   }
 
+  const query = examType + videoTypeQuery + languageQuery;
   const resultsElement = document.getElementById('results');
   resultsElement.innerHTML = '';
 
@@ -46,9 +41,26 @@ function fetchVideos() {
     }
   }
 
-  execute(examType + videoTypeQuery + languageQuery, fetchButton);
+  // Fetch data from your backend API
+  fetch(`https://project-v-backend.onrender.com/api/youtube-search?query=${encodeURIComponent(query)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        console.error("Error fetching videos:", data.error);
+        resultsElement.innerHTML = `<p>Error: ${data.error}</p>`;
+      } else {
+        displayResults(data.items);
+      }
+      fetchButton.disabled = false;
+    })
+    .catch(error => {
+      console.error("Error fetching videos:", error);
+      resultsElement.innerHTML = '<p>Error fetching videos. Please try again later.</p>';
+      fetchButton.disabled = false;
+    });
 }
 
+// Function to create skeleton loaders
 function createSkeletonLoader() {
   const skeletonLoader = document.createElement('div');
   skeletonLoader.className = 'result-item skeleton';
@@ -59,22 +71,7 @@ function createSkeletonLoader() {
   return skeletonLoader;
 }
 
-function execute(query, fetchButton) {
-  gapi.client.youtube.search.list({
-    "part": "snippet",
-    "maxResults": 25,
-    "q": query
-  })
-  .then(response => {
-    displayResults(response.result.items);
-    fetchButton.disabled = false;
-  })
-  .catch(err => {
-    console.error("Execute error", err);
-    fetchButton.disabled = false;
-  });
-}
-
+// Function to display the fetched videos
 function displayResults(videos) {
   const resultsElement = document.getElementById('results');
   resultsElement.innerHTML = '';
@@ -96,6 +93,7 @@ function displayResults(videos) {
   });
 }
 
+// Function to create video elements
 function createVideoElement(video) {
   const listItem = document.createElement('div');
   listItem.className = 'result-item';
@@ -115,8 +113,7 @@ function createVideoElement(video) {
   return listItem;
 }
 
-gapi.load("client", loadClient);
-
+// Initialize page elements on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   const states = getMainStates();
   const columns = document.querySelectorAll('.state-column');
@@ -127,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupToggleButtons();
 });
 
+// Function to get main states
 function getMainStates() {
   return [
     { slug: 'andhra-pradesh', name: 'Andhra Pradesh' },
@@ -159,6 +157,7 @@ function getMainStates() {
   ].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+// Function to populate state columns
 function populateStateColumns(states, columns) {
   const statesPerColumn = Math.ceil(states.length / columns.length);
   columns.forEach((column, index) => {
@@ -177,12 +176,14 @@ function populateStateColumns(states, columns) {
   });
 }
 
+// Function to create state list items
 function createStateListItem(state) {
   const listItem = document.createElement('li');
   listItem.innerHTML = `<a href="https://sarkariwallahjob.com/state/${state.slug}/" target="_blank">${state.name}</a>`;
   return listItem;
 }
 
+// Function to fetch job listings from the backend
 function fetchJobListings() {
   fetch('https://project-v-backend.onrender.com/api/jobs')
     .then(response => response.ok ? response.json() : Promise.reject(`Network error: ${response.statusText}`))
@@ -190,6 +191,7 @@ function fetchJobListings() {
     .catch(error => showError(error, 'job-categories'));
 }
 
+// Function to render job listings
 function renderJobListings(data) {
   const jobCategories = groupJobsByCategory(data);
   for (const [category, jobs] of Object.entries(jobCategories)) {
@@ -205,6 +207,7 @@ function renderJobListings(data) {
   }
 }
 
+// Function to group jobs by category
 function groupJobsByCategory(data) {
   const uniqueJobs = new Set();
   return data.reduce((acc, job) => {
@@ -218,6 +221,7 @@ function groupJobsByCategory(data) {
   }, {});
 }
 
+// Function to create job list items
 function createJobListItem(job) {
   if (!job.title || !job.date) return;
   const listItem = document.createElement('li');
@@ -229,6 +233,7 @@ function createJobListItem(job) {
   return listItem;
 }
 
+// Function to get category ID based on category name
 function getCategoryId(category) {
   const categoryMap = {
     'Latest Jobs': 'latest-jobs',
@@ -240,18 +245,21 @@ function getCategoryId(category) {
   return categoryMap[category] || category;
 }
 
+// Function to show error messages
 function showError(message, elementId) {
   const element = document.querySelector(`.${elementId}`);
   if (element) element.innerHTML = `<p>${message}</p>`;
   console.error(message);
 }
 
+// Function to set up toggle buttons for switching between videos and job sections
 function setupToggleButtons() {
   const toggleControls = createToggleControls();
   document.body.insertBefore(toggleControls, document.querySelector('h1'));
   setupToggleEvents();
 }
 
+// Function to create toggle controls
 function createToggleControls() {
   const toggleControls = document.createElement('div');
   toggleControls.id = 'toggle-controls';
@@ -261,6 +269,7 @@ function createToggleControls() {
   return toggleControls;
 }
 
+// Function to set up toggle events
 function setupToggleEvents() {
   const videosSection = document.getElementById('video-search').parentElement;
   const jobsSection = document.getElementById('job-listings').parentElement;
@@ -274,11 +283,13 @@ function setupToggleEvents() {
   });
 }
 
+// Function to toggle section visibility
 function toggleSectionVisibility(videosSection, jobsSection, showVideos) {
   videosSection.style.display = showVideos ? 'block' : 'none';
   jobsSection.style.display = showVideos ? 'none' : 'block';
 }
 
+// Function for random word animation
 const word = document.querySelector('#video-search'); 
 let interv, canChange = false, globalCount = 0, count = 0, isGoing = false, INITIAL_WORD = word.innerHTML;
 
@@ -316,4 +327,5 @@ function getRandomLetter() {
   return alphabet[Math.floor(Math.random() * alphabet.length)];
 }
 
+// Start the animation when the page loads
 startAnimation();
