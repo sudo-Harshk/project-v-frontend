@@ -1,24 +1,17 @@
-// Load the YouTube Data API client
 function loadClient() {
   gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY");
   return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
-    .then(() => {
-      console.log("GAPI client loaded for API");
-    })
-    .catch(err => {
-      console.error("Error loading GAPI client for API", err);
-    });
+    .then(() => console.log("GAPI client loaded for API"))
+    .catch(err => console.error("Error loading GAPI client for API", err));
 }
 
-// Fetch videos based on selected exam, language, and video type
 function fetchVideos() {
   const fetchButton = document.querySelector('button');
-  fetchButton.disabled = true; // Disable button while fetching
-
+  fetchButton.disabled = true;
   const examType = document.getElementById("examSelect").value;
   if (!examType) {
     alert("Please select an exam type.");
-    fetchButton.disabled = false; // Re-enable button if there's an issue
+    fetchButton.disabled = false;
     return;
   }
 
@@ -42,14 +35,17 @@ function fetchVideos() {
   }
 
   const resultsElement = document.getElementById('results');
-  resultsElement.innerHTML = ''; // Clear previous results
+  resultsElement.innerHTML = '';
 
-  // Add skeleton loaders
   for (let i = 0; i < 5; i++) {
-    resultsElement.appendChild(createSkeletonLoader());
+    const skeletonLoader = createSkeletonLoader();
+    if (skeletonLoader instanceof Node) {
+      resultsElement.appendChild(skeletonLoader);
+    } else {
+      console.error("Error: skeletonLoader is not a DOM node");
+    }
   }
 
-  // Execute the search
   execute(examType + videoTypeQuery + languageQuery, fetchButton);
 }
 
@@ -71,17 +67,17 @@ function execute(query, fetchButton) {
   })
   .then(response => {
     displayResults(response.result.items);
-    fetchButton.disabled = false; // Re-enable button after fetching
+    fetchButton.disabled = false;
   })
   .catch(err => {
     console.error("Execute error", err);
-    fetchButton.disabled = false; // Re-enable button if error occurs
+    fetchButton.disabled = false;
   });
 }
 
 function displayResults(videos) {
   const resultsElement = document.getElementById('results');
-  resultsElement.innerHTML = ''; // Clear skeleton loaders
+  resultsElement.innerHTML = '';
 
   if (videos.length === 0) {
     resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
@@ -90,36 +86,49 @@ function displayResults(videos) {
 
   videos.forEach(video => {
     if (video.id && video.id.videoId) {
-      const listItem = document.createElement('div');
-      listItem.className = 'result-item'; // Same class used by the skeleton loader
-
-      const link = document.createElement('a');
-      link.href = `https://www.youtube.com/watch?v=${video.id.videoId}`;
-      link.target = '_blank';
-
-      const img = document.createElement('img');
-      img.src = video.snippet.thumbnails.medium.url;
-      img.className = 'skeleton-img'; // Same class for consistent image style
-      img.alt = video.snippet.title;
-
-      const titleDiv = document.createElement('div');
-      titleDiv.className = 'title'; // Same class for consistent title style
-      titleDiv.textContent = video.snippet.title;
-
-      link.appendChild(img);
-      link.appendChild(titleDiv);
-      listItem.appendChild(link);
-      resultsElement.appendChild(listItem);
+      const listItem = createVideoElement(video);
+      if (listItem instanceof Node) {
+        resultsElement.appendChild(listItem);
+      } else {
+        console.error("Error: listItem is not a DOM node");
+      }
     }
   });
 }
 
-// Load the YouTube API
+function createVideoElement(video) {
+  const listItem = document.createElement('div');
+  listItem.className = 'result-item';
+  const link = document.createElement('a');
+  link.href = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+  link.target = '_blank';
+  const img = document.createElement('img');
+  img.src = video.snippet.thumbnails.medium.url;
+  img.className = 'skeleton-img';
+  img.alt = video.snippet.title;
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'title';
+  titleDiv.textContent = video.snippet.title;
+  link.appendChild(img);
+  link.appendChild(titleDiv);
+  listItem.appendChild(link);
+  return listItem;
+}
+
 gapi.load("client", loadClient);
 
-// Fetch job listings and display them in the job categories
 document.addEventListener('DOMContentLoaded', () => {
-  const states = [
+  const states = getMainStates();
+  const columns = document.querySelectorAll('.state-column');
+
+  if (columns.length === 0) return console.error('No state columns found on the page.');
+  populateStateColumns(states, columns);
+  fetchJobListings();
+  setupToggleButtons();
+});
+
+function getMainStates() {
+  return [
     { slug: 'andhra-pradesh', name: 'Andhra Pradesh' },
     { slug: 'arunachal-pradesh', name: 'Arunachal Pradesh' },
     { slug: 'assam', name: 'Assam' },
@@ -147,235 +156,164 @@ document.addEventListener('DOMContentLoaded', () => {
     { slug: 'jammu-kashmir', name: 'Jammu & Kashmir' },
     { slug: 'chhattisgarh', name: 'Chhattisgarh' },
     { slug: 'goa', name: 'Goa' }
-  ];
-  
-  // Sorting states alphabetically
-  states.sort((a, b) => a.name.localeCompare(b.name));
+  ].sort((a, b) => a.name.localeCompare(b.name));
+}
 
-  const columns = document.querySelectorAll('.state-column');
+function populateStateColumns(states, columns) {
   const statesPerColumn = Math.ceil(states.length / columns.length);
-
-  if (columns.length === 0) {
-    console.error('No state columns found on the page.');
-    return;
-  }
-
-  // Populate state columns
   columns.forEach((column, index) => {
-    const start = index * statesPerColumn;
-    const end = start + statesPerColumn;
-    const statesSubset = states.slice(start, end);
-
     const stateList = column.querySelector('.state-list');
     if (stateList) {
+      const statesSubset = states.slice(index * statesPerColumn, (index + 1) * statesPerColumn);
       statesSubset.forEach(state => {
-        const listItem = document.createElement('li');
-        const stateLink = document.createElement('a');
-
-        stateLink.href = `https://sarkariwallahjob.com/state/${state.slug}/`;
-        stateLink.textContent = state.name;
-        stateLink.target = '_blank';
-
-        listItem.appendChild(stateLink);
-        stateList.appendChild(listItem);
+        const listItem = createStateListItem(state);
+        if (listItem instanceof Node) {
+          stateList.appendChild(listItem);
+        } else {
+          console.error("Error: listItem is not a DOM node");
+        }
       });
-    } else {
-      console.warn(`No state list found in column ${index + 1}`);
     }
   });
+}
 
-  // Map categories to corresponding section IDs
+function createStateListItem(state) {
+  const listItem = document.createElement('li');
+  listItem.innerHTML = `<a href="https://sarkariwallahjob.com/state/${state.slug}/" target="_blank">${state.name}</a>`;
+  return listItem;
+}
+
+function fetchJobListings() {
+  fetch('https://project-v-backend.onrender.com/api/jobs')
+    .then(response => response.ok ? response.json() : Promise.reject(`Network error: ${response.statusText}`))
+    .then(data => renderJobListings(data))
+    .catch(error => showError(error, 'job-categories'));
+}
+
+function renderJobListings(data) {
+  const jobCategories = groupJobsByCategory(data);
+  for (const [category, jobs] of Object.entries(jobCategories)) {
+    const jobList = document.querySelector(`#${getCategoryId(category)} .job-list`);
+    if (jobList) jobs.forEach(job => {
+      const listItem = createJobListItem(job);
+      if (listItem instanceof Node) {
+        jobList.appendChild(listItem);
+      } else {
+        console.error("Error: listItem is not a DOM node");
+      }
+    });
+  }
+}
+
+function groupJobsByCategory(data) {
+  const uniqueJobs = new Set();
+  return data.reduce((acc, job) => {
+    const category = job.category || 'Latest Jobs';
+    if (!uniqueJobs.has(job.title)) {
+      uniqueJobs.add(job.title);
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(job);
+    }
+    return acc;
+  }, {});
+}
+
+function createJobListItem(job) {
+  if (!job.title || !job.date) return;
+  const listItem = document.createElement('li');
+  listItem.classList.add('job-item');
+  listItem.innerHTML = `
+    <div class="job-title">${job.title}</div>
+    <div class="job-date">Published on: ${new Date(job.date).toLocaleDateString()}</div>
+    <a href="${job.link}" target="_blank" class="read-more">Read more</a>`;
+  return listItem;
+}
+
+function getCategoryId(category) {
   const categoryMap = {
     'Latest Jobs': 'latest-jobs',
     'Central Jobs': 'central-jobs',
     'Bank Jobs': 'bank-jobs',
     '10th Pass Govt Jobs': 'tenth-Pass-Govt-Jobs',
-    'Intermediate Jobs': 'intermediate-jobs', 
+    'Intermediate Jobs': 'intermediate-jobs'
   };
-  
-  // Fetch jobs from the API
-  fetch('https://project-v-backend.onrender.com/api/jobs')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Fetched Job Data:', data);
+  return categoryMap[category] || category;
+}
 
-      const uniqueJobs = new Set();
+function showError(message, elementId) {
+  const element = document.querySelector(`.${elementId}`);
+  if (element) element.innerHTML = `<p>${message}</p>`;
+  console.error(message);
+}
 
-      // Group jobs by category and remove duplicates
-      const groupedJobs = data.reduce((acc, job) => {
-        const category = job.category || 'Latest Jobs';
-        const uniqueKey = job.title || job.link;
+function setupToggleButtons() {
+  const toggleControls = createToggleControls();
+  document.body.insertBefore(toggleControls, document.querySelector('h1'));
+  setupToggleEvents();
+}
 
-        // Skip duplicates
-        if (uniqueJobs.has(uniqueKey)) {
-          console.warn(`Duplicate job found: ${job.title}`);
-          return acc;
-        }
-
-        uniqueJobs.add(uniqueKey);
-
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-        acc[category].push(job);
-        return acc;
-      }, {});
-
-      // Sort jobs in each category by date (most recent first)
-      for (const category in groupedJobs) {
-        groupedJobs[category].sort((a, b) => {
-          const dateA = new Date(a.date).getTime();
-          const dateB = new Date(b.date).getTime();
-          return (isNaN(dateA) ? 1 : dateB - dateA);
-        });
-      }
-
-      // Render the jobs in their respective sections
-      for (const [category, jobs] of Object.entries(groupedJobs)) {
-        const categoryId = categoryMap[category] || category;
-        const jobList = document.querySelector(`#${categoryId} .job-list`);
-      
-        if (jobList) {
-          jobs.forEach(job => {
-            // Skip jobs with an empty title or null date
-            if (!job.title || !job.title.trim() || !job.date) return;
-      
-            const listItem = document.createElement('li');
-            listItem.classList.add('job-item');
-      
-            const jobTitle = `<div class="job-title">${job.title}</div>`;
-            const jobDate = job.date ? `<div class="job-date">Published on: ${new Date(job.date).toLocaleDateString()}</div>` : '';
-      
-            listItem.innerHTML = `
-              ${jobTitle}
-              ${jobDate}
-              <a href="${job.link}" target="_blank" class="read-more">Read more</a>
-            `.trim();
-      
-            jobList.appendChild(listItem);
-          });
-        } else {
-          console.warn(`No job list found for category: ${category}`);
-        }
-      }      
-    })
-    .catch(error => {
-      console.error('Error fetching jobs:', error);
-      const jobCategories = document.querySelector('.job-categories');
-      jobCategories.innerHTML = '<p>Error fetching job listings. Please try again later.</p>';
-    });
-});
-
-// Toggle between Videos and Jobs
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleVideosButton = document.createElement('button');
-  const toggleJobsButton = document.createElement('button');
-
-  toggleVideosButton.textContent = 'Show Videos';
-  toggleJobsButton.textContent = 'Show Jobs';
-
+function createToggleControls() {
   const toggleControls = document.createElement('div');
   toggleControls.id = 'toggle-controls';
-  toggleControls.appendChild(toggleVideosButton);
-  toggleControls.appendChild(toggleJobsButton);
+  toggleControls.innerHTML = `
+    <button id="showVideos">Show Videos</button>
+    <button id="showJobs">Show Jobs</button>`;
+  return toggleControls;
+}
 
-  document.body.insertBefore(toggleControls, document.querySelector('h1'));
-
+function setupToggleEvents() {
   const videosSection = document.getElementById('video-search').parentElement;
   const jobsSection = document.getElementById('job-listings').parentElement;
+  toggleSectionVisibility(videosSection, jobsSection, true);
 
-  // Initially show the video section and hide the jobs section
-  videosSection.style.display = 'block';
-  jobsSection.style.display = 'none';
-
-  toggleVideosButton.addEventListener('click', () => {
-    videosSection.style.display = 'block';
-    jobsSection.style.display = 'none';
+  document.getElementById('showVideos').addEventListener('click', () => {
+    toggleSectionVisibility(videosSection, jobsSection, true);
   });
-
-  toggleJobsButton.addEventListener('click', () => {
-    videosSection.style.display = 'none';
-    jobsSection.style.display = 'block';
+  document.getElementById('showJobs').addEventListener('click', () => {
+    toggleSectionVisibility(videosSection, jobsSection, false);
   });
-});
+}
 
-// Video animation 
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function toggleSectionVisibility(videosSection, jobsSection, showVideos) {
+  videosSection.style.display = showVideos ? 'block' : 'none';
+  jobsSection.style.display = showVideos ? 'none' : 'block';
+}
+
+const word = document.querySelector('#video-search'); 
+let interv, canChange = false, globalCount = 0, count = 0, isGoing = false, INITIAL_WORD = word.innerHTML;
+
+function initAnimation() {
+  if (isGoing) return;
+  isGoing = true;
+  const randomWord = getRandomWord(word.innerHTML);
+  word.innerHTML = randomWord;
+  interv = setInterval(updateAnimation, 100);
+}
+
+function getRandomWord(word) {
+  return word.replace(/./g, char => (char === ' ' ? ' ' : getRandomLetter()));
+}
+
+function updateAnimation() {
+  word.innerHTML = [...INITIAL_WORD].map((char, i) => (i <= count && canChange) ? char : getRandomLetter()).join('');
+  if (canChange) count++;
+  if (++globalCount >= 40) canChange = true;
+  if (count >= INITIAL_WORD.length) resetAnimation();
+}
+
+function resetAnimation() {
+  clearInterval(interv);
+  count = globalCount = canChange = isGoing = 0;
+}
+
+function startAnimation() {
+  if (!isGoing) initAnimation();
+  setInterval(initAnimation, 10000); 
 }
 
 function getRandomLetter() {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  return alphabet[rand(0, alphabet.length - 1)];
+  return alphabet[Math.floor(Math.random() * alphabet.length)];
 }
-
-function getRandomWord(word) {
-  const text = word.innerHTML;
-  let finalWord = '';
-  for (let i = 0; i < text.length; i++) {
-    finalWord += text[i] === ' ' ? ' ' : getRandomLetter();
-  }
-  return finalWord;
-}
-
-const word = document.querySelector('#video-search'); 
-let interv;
-let canChange = false;
-let globalCount = 0;
-let count = 0;
-const INITIAL_WORD = word.innerHTML;
-let isGoing = false;
-
-function init() {
-  if (isGoing) return;
-
-  isGoing = true;
-  const randomWord = getRandomWord(word);
-  word.innerHTML = randomWord;
-
-  interv = setInterval(() => {
-    let finalWord = '';
-    for (let x = 0; x < INITIAL_WORD.length; x++) {
-      if (x <= count && canChange) {
-        finalWord += INITIAL_WORD[x];
-      } else {
-        finalWord += getRandomLetter();
-      }
-    }
-    word.innerHTML = finalWord;
-    if (canChange) {
-      count++;
-    }
-    if (globalCount >= 40) { 
-      canChange = true;
-    }
-    if (count >= INITIAL_WORD.length) {
-      clearInterval(interv);
-      count = 0;
-      canChange = false;
-      globalCount = 0;
-      isGoing = false;
-    }
-    globalCount++;
-  }, 100); 
-}
-
-function startAnimation() {
-  if (!isGoing) {
-    init();
-  }
-  setInterval(() => {
-    if (!isGoing) {
-      init();
-    }
-  }, 10000); 
-}
-
-console.log('Fetched Job Data:', data);
 
 startAnimation();
