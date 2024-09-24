@@ -191,19 +191,40 @@ nav {
   margin: 0;
 }
 
+.state-list {
+  list-style-type: none; /* Remove default bullet points */
+  padding-left: 30px; /* Adjust padding for bullet points */
+}
+
 .state-list li {
   position: relative;
-  overflow: hidden;
   margin-bottom: 10px;
+  padding-left: 30px; /* Adjust spacing for the image */
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
+/* Add custom image bullet points */
+.state-list li:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px; /* Adjust vertical alignment of the image */
+  width: 15px; /* Adjust image size */
+  height: 15px; /* Adjust image size */
+  background: url('./assets/right-arrow.png') no-repeat center center;
+  background-size: contain; /* Make sure the image fits within the space */
+}
+
+/* Text link styles */
 .state-list li a {
-  position: relative;
   text-decoration: none;
   color: inherit;
-  transition: color 0.3s ease;
+  position: relative;
+  transition: color 0.3s ease; /* Smooth transition for text color */
 }
 
+/* Underline effect on hover */
 .state-list li a:after {
   content: '';
   position: absolute;
@@ -212,16 +233,23 @@ nav {
   bottom: 0;
   left: 0;
   background-color: #007bff;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease; /* Smooth transition for the underline */
 }
 
 .state-list li:hover a:after {
-  width: 100%;
+  width: 100%; /* Extend underline to full width on hover */
 }
 
+/* Text color change on hover */
 .state-list li:hover a {
-  color: #007bff;
+  color: #007bff; /* Change text color on hover */
 }
+
+/* Optional: Hover effect for the arrow */
+.state-list li:hover:before {
+  filter: brightness(0.8); /* Slight darkening effect on hover */
+}
+
 
 /* Job Categories */
 .job-categories {
