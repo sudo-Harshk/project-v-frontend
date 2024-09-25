@@ -1,6 +1,6 @@
 // Load the YouTube Data API client
 function loadClient() {
-  gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY");
+  gapi.client.setApiKey("AIzaSyBFJVj-p7TGX1kJCdFWXveO61HXYnkRlcY"); 
   return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
     .then(() => {
       console.log("GAPI client loaded for API");
@@ -22,27 +22,11 @@ function fetchVideos() {
     return;
   }
 
-  let languageQuery = "";
-  if (document.getElementById("englishLang").checked) {
-    languageQuery += " English";
-  }
-  if (document.getElementById("teluguLang").checked) {
-    languageQuery += " Telugu";
-  }
-
-  let videoTypeQuery = "";
-  if (document.getElementById("examPreparation").checked) {
-    videoTypeQuery += " exam preparation";
-  }
-  if (document.getElementById("crashCourse").checked) {
-    videoTypeQuery += " crash course";
-  }
-  if (document.getElementById("strategy").checked) {
-    videoTypeQuery += " strategy";
-  }
+  const languageQuery = getSelectedLanguages();
+  const videoTypeQuery = getSelectedVideoTypes();
 
   const resultsElement = document.getElementById('results');
-  resultsElement.innerHTML = ''; // Clear previous results
+  resultsElement.innerHTML = ''; 
 
   // Add skeleton loaders
   for (let i = 0; i < 5; i++) {
@@ -50,15 +34,30 @@ function fetchVideos() {
   }
 
   // Execute the search
-  execute(examType + videoTypeQuery + languageQuery, fetchButton);
+  execute(`${examType} ${videoTypeQuery} ${languageQuery}`, fetchButton);
+}
+
+function getSelectedLanguages() {
+  let languages = [];
+  if (document.getElementById("englishLang").checked) languages.push("English");
+  if (document.getElementById("teluguLang").checked) languages.push("Telugu");
+  return languages.join(" ");
+}
+
+function getSelectedVideoTypes() {
+  let types = [];
+  if (document.getElementById("examPreparation").checked) types.push("exam preparation");
+  if (document.getElementById("crashCourse").checked) types.push("crash course");
+  if (document.getElementById("strategy").checked) types.push("strategy");
+  return types.join(" ");
 }
 
 function createSkeletonLoader() {
   const skeletonLoader = document.createElement('div');
   skeletonLoader.className = 'result-item skeleton';
   skeletonLoader.innerHTML = `
-      <div class="skeleton-img"></div>
-      <div class="skeleton-title"></div>
+    <div class="skeleton-img"></div>
+    <div class="skeleton-title"></div>
   `;
   return skeletonLoader;
 }
@@ -71,17 +70,17 @@ function execute(query, fetchButton) {
   })
   .then(response => {
     displayResults(response.result.items);
-    fetchButton.disabled = false; // Re-enable button after fetching
+    fetchButton.disabled = false; 
   })
   .catch(err => {
     console.error("Execute error", err);
-    fetchButton.disabled = false; // Re-enable button if error occurs
+    fetchButton.disabled = false; 
   });
 }
 
 function displayResults(videos) {
   const resultsElement = document.getElementById('results');
-  resultsElement.innerHTML = ''; // Clear skeleton loaders
+  resultsElement.innerHTML = ''; 
 
   if (videos.length === 0) {
     resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
@@ -90,21 +89,10 @@ function displayResults(videos) {
 
   videos.forEach(video => {
     if (video.id && video.id.videoId) {
-      const listItem = document.createElement('div');
-      listItem.className = 'result-item'; // Same class used by the skeleton loader
-
-      const link = document.createElement('a');
-      link.href = `https://www.youtube.com/watch?v=${video.id.videoId}`;
-      link.target = '_blank';
-
-      const img = document.createElement('img');
-      img.src = video.snippet.thumbnails.medium.url;
-      img.className = 'skeleton-img'; // Same class for consistent image style
-      img.alt = video.snippet.title;
-
-      const titleDiv = document.createElement('div');
-      titleDiv.className = 'title'; // Same class for consistent title style
-      titleDiv.textContent = video.snippet.title;
+      const listItem = createElement('div', ['result-item']);
+      const link = createElement('a', [], '', { href: `https://www.youtube.com/watch?v=${video.id.videoId}`, target: '_blank' });
+      const img = createElement('img', ['skeleton-img'], '', { src: video.snippet.thumbnails.medium.url, alt: video.snippet.title });
+      const titleDiv = createElement('div', ['title'], video.snippet.title);
 
       link.appendChild(img);
       link.appendChild(titleDiv);
@@ -112,6 +100,19 @@ function displayResults(videos) {
       resultsElement.appendChild(listItem);
     }
   });
+}
+
+// Utility function to create elements
+function createElement(tag, classNames = [], innerHTML = '', attributes = {}) {
+  const element = document.createElement(tag);
+  element.className = classNames.join(' ');
+  element.innerHTML = innerHTML;
+
+  Object.keys(attributes).forEach(attr => {
+    element.setAttribute(attr, attributes[attr]);
+  });
+
+  return element;
 }
 
 // Load the YouTube API
@@ -192,13 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const stateList = column.querySelector('.state-list');
     if (stateList) {
       statesSubset.forEach(state => {
-        const listItem = document.createElement('li');
-        const stateLink = document.createElement('a');
-
-        stateLink.href = `https://sarkariwallahjob.com/state/${state.slug}/`;
-        stateLink.textContent = state.name;
-        stateLink.target = '_blank';
-
+        const listItem = createElement('li');
+        const stateLink = createElement('a', [], state.name, { href: `https://sarkariwallahjob.com/state/${state.slug}/`, target: '_blank' });
         listItem.appendChild(stateLink);
         stateList.appendChild(listItem);
       });
@@ -265,12 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
         if (jobList) {
           jobs.forEach(job => {
-            // Skip jobs with an empty title or null date
             if (!job.title || !job.title.trim() || !job.date) return;
       
-            const listItem = document.createElement('li');
-            listItem.classList.add('job-item');
-      
+            const listItem = createElement('li', ['job-item']);
             const jobTitle = `<div class="job-title">${job.title}</div>`;
             const jobDate = job.date ? `<div class="job-date">Published on: ${new Date(job.date).toLocaleDateString()}</div>` : '';
       
@@ -296,14 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Toggle between Videos and Jobs
 document.addEventListener('DOMContentLoaded', () => {
-  const toggleVideosButton = document.createElement('button');
-  const toggleJobsButton = document.createElement('button');
+  const toggleVideosButton = createElement('button', [], 'Show Videos');
+  const toggleJobsButton = createElement('button', [], 'Show Jobs');
 
-  toggleVideosButton.textContent = 'Show Videos';
-  toggleJobsButton.textContent = 'Show Jobs';
-
-  const toggleControls = document.createElement('div');
-  toggleControls.id = 'toggle-controls';
+  const toggleControls = createElement('div', ['toggle-controls']);
   toggleControls.appendChild(toggleVideosButton);
   toggleControls.appendChild(toggleJobsButton);
 
@@ -339,11 +328,7 @@ function getRandomLetter() {
 
 function getRandomWord(word) {
   const text = word.innerHTML;
-  let finalWord = '';
-  for (let i = 0; i < text.length; i++) {
-    finalWord += text[i] === ' ' ? ' ' : getRandomLetter();
-  }
-  return finalWord;
+  return text.split('').map(char => (char === ' ' ? ' ' : getRandomLetter())).join('');
 }
 
 const word = document.querySelector('#video-search'); 
@@ -364,19 +349,11 @@ function init() {
   interv = setInterval(() => {
     let finalWord = '';
     for (let x = 0; x < INITIAL_WORD.length; x++) {
-      if (x <= count && canChange) {
-        finalWord += INITIAL_WORD[x];
-      } else {
-        finalWord += getRandomLetter();
-      }
+      finalWord += (x <= count && canChange) ? INITIAL_WORD[x] : getRandomLetter();
     }
     word.innerHTML = finalWord;
-    if (canChange) {
-      count++;
-    }
-    if (globalCount >= 40) { 
-      canChange = true;
-    }
+    if (canChange) count++;
+    if (globalCount >= 40) canChange = true;
     if (count >= INITIAL_WORD.length) {
       clearInterval(interv);
       count = 0;
@@ -389,17 +366,11 @@ function init() {
 }
 
 function startAnimation() {
-  if (!isGoing) {
-    init();
-  }
+  if (!isGoing) init();
   setInterval(() => {
-    if (!isGoing) {
-      init();
-    }
+    if (!isGoing) init();
   }, 10000); 
 }
-
-console.log('Fetched Job Data:', data);
 
 startAnimation();
 
