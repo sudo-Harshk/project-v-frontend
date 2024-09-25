@@ -402,3 +402,5 @@ function startAnimation() {
 console.log('Fetched Job Data:', data);
 
 startAnimation();
+
+
