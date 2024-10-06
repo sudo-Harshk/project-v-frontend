@@ -28,8 +28,9 @@ function fetchVideos() {
   const resultsElement = document.getElementById('results');
   resultsElement.innerHTML = ''; 
 
-  // Add skeleton loaders
-  for (let i = 0; i < 5; i++) {
+  // Add skeleton loaders based on the number of videos to fetch
+  const numberOfSkeletonLoaders = 20; 
+  for (let i = 0; i < numberOfSkeletonLoaders; i++) {
     resultsElement.appendChild(createSkeletonLoader());
   }
 
@@ -64,17 +65,20 @@ function createSkeletonLoader() {
 
 function execute(query, fetchButton) {
   gapi.client.youtube.search.list({
-    "part": "snippet",
-    "maxResults": 25,
-    "q": query
+      "part": "snippet",
+      "maxResults": 20, // Fetch 20 videos
+      "q": query
   })
   .then(response => {
-    displayResults(response.result.items);
-    fetchButton.disabled = false; 
+      // Log the number of videos fetched
+      console.log("Number of videos fetched:", response.result.items.length);
+      
+      displayResults(response.result.items);
+      fetchButton.disabled = false; 
   })
   .catch(err => {
-    console.error("Execute error", err);
-    fetchButton.disabled = false; 
+      console.error("Execute error", err);
+      fetchButton.disabled = false; 
   });
 }
 
@@ -83,24 +87,45 @@ function displayResults(videos) {
   resultsElement.innerHTML = ''; 
 
   if (videos.length === 0) {
-    resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
-    return;
+      resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
+      return;
   }
 
-  videos.forEach(video => {
-    if (video.id && video.id.videoId) {
-      const listItem = createElement('div', ['result-item']);
-      const link = createElement('a', [], '', { href: `https://www.youtube.com/watch?v=${video.id.videoId}`, target: '_blank' });
-      const img = createElement('img', ['skeleton-img'], '', { src: video.snippet.thumbnails.medium.url, alt: video.snippet.title });
-      const titleDiv = createElement('div', ['title'], video.snippet.title);
+  console.log("Fetched videos:", videos);
 
-      link.appendChild(img);
-      link.appendChild(titleDiv);
-      listItem.appendChild(link);
-      resultsElement.appendChild(listItem);
-    }
+  videos.forEach(video => {
+      if (video.id && video.id.videoId) {
+          // Handle video display
+          const listItem = createElement('div', ['result-item']);
+          const link = createElement('a', [], '', { href: `https://www.youtube.com/watch?v=${video.id.videoId}`, target: '_blank' });
+          const img = createElement('img', ['skeleton-img'], '', { src: video.snippet.thumbnails.medium.url, alt: video.snippet.title });
+          const titleDiv = createElement('div', ['title'], video.snippet.title);
+
+          link.appendChild(img);
+          link.appendChild(titleDiv);
+          listItem.appendChild(link);
+          resultsElement.appendChild(listItem);
+      } else if (video.id && video.id.kind === 'youtube#playlist') {
+          // Handle playlist display
+          const listItem = createElement('div', ['result-item playlist']);
+          const link = createElement('a', [], '', { href: `https://www.youtube.com/playlist?list=${video.id.playlistId}`, target: '_blank' });
+          const titleDiv = createElement('div', ['title'], video.snippet.title + ' (Playlist)'); // Indicate it's a playlist
+
+          link.appendChild(titleDiv);
+          listItem.appendChild(link);
+          resultsElement.appendChild(listItem);
+      } else {
+          console.warn("Video missing ID or videoId:", video);
+      }
   });
+
+  if (resultsElement.innerHTML === '') {
+      resultsElement.innerHTML = '<p>No valid videos found for the selected criteria.</p>';
+  }
 }
+
+
+
 
 // Utility function to create elements
 function createElement(tag, classNames = [], innerHTML = '', attributes = {}) {
