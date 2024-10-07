@@ -115,12 +115,12 @@ nav {
 
 @media (max-width: 768px) {
   .nav-links {
-    display: none; /* Hide nav links initially */
-    flex-direction: column; /* Stack links vertically on mobile */
+    display: none;
+    flex-direction: column;
   }
 
   .nav-links.active {
-    display: flex; /* Show nav links when active */
+    display: flex;
   }
 
   .menu-icon {
@@ -541,18 +541,26 @@ button:active {
     height: 2px; 
     background-color: #ec724b; 
   }
-  
+
   #video-search {
     font-size: 40px; 
     line-height: 80px; 
     height: 80px; 
     letter-spacing: 8px; 
   }
-  
+
   .state-container {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 700px; 
-    gap: 15px; 
+    grid-template-columns: 1fr;
+    max-width: 100%; 
+    gap: 20px; 
+    padding: 10px;
+  }
+
+  .job-categories {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    gap: 20px;
+    padding: 10px;
   }
 
   .controls {
@@ -569,7 +577,7 @@ button:active {
 
 @media (max-width: 400px) {
   .state-container, .job-categories {
-    grid-template-columns: 1fr; /* Single column */
+    grid-template-columns: 1fr;
     gap: 10px; 
   }
 
@@ -604,6 +612,7 @@ button:active {
     height: 2px;
     background-color: #ec724b;
   }
+
   #video-search {
     font-size: 30px; 
     line-height: 60px; 
