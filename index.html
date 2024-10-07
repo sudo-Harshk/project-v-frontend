@@ -21,112 +21,110 @@
   </nav>
   
   <main>
-  <!-- Hero-img -->
-  <div class="hero-img">
-    <img src="./assets/hero-img-upscaled.webp" alt="Hero Image Description" />
-  </div>
-
-  <h1 id="job-listings">One Click Away from Your <span class="underline">Next Big Break!</span></h1>
-
-  <!-- Job Listings Section -->
-  <div class="state-container">
-    <div class="state-column">
-      <ul class="state-list"></ul>
+    <div class="hero-img">
+      <img src="./assets/hero-img-upscaled.webp" alt="Hero Image Description" />
     </div>
-    <div class="state-column">
-      <ul class="state-list"></ul>
-    </div>  
-  </div>
 
-  <div class="latest-jobs-header">
-    <p>For the most recent updates, please cross-check on 
-      <a href="https://sarkariwallahjob.com/category/new-job/" target="_blank">Latest Jobs</a>
-    </p>
-  </div>
+    <h1 id="job-listings">One Click Away from Your <span class="underline">Next Big Break!</span></h1>
 
-  <div class="job-categories">
-    <div class="category" id="latest-jobs">
-      <div class="category-header">
-        <h2>Latest Jobs</h2>
+    <div class="state-container">
+      <div class="state-column">
+        <ul class="state-list"></ul>
       </div>
-      <ul class="job-list"></ul>
-    </div>
-    
-    <div class="category" id="central-jobs">
-      <div class="category-header">
-        <h2>Central Jobs</h2>
-        <a href="https://sarkariwallahjob.com/category/central-job/" target="_blank" class="view-all-btn">View All</a>
-      </div>
-      <ul class="job-list"></ul>
-    </div>
-    
-    <div class="category" id="bank-jobs">
-      <div class="category-header">
-        <h2>Bank Jobs</h2>
-        <a href="https://sarkariwallahjob.com/category/bank-job/" target="_blank" class="view-all-btn">View All</a>
-      </div>
-      <ul class="job-list"></ul>
+      <div class="state-column">
+        <ul class="state-list"></ul>
+      </div>  
     </div>
 
-    <div class="category" id="tenth-Pass-Govt-Jobs">
-      <div class="category-header">
-          <h2>10th Jobs</h2>
-          <a href="https://allgovernmentjobs.in/10th-pass-govt-jobs" target="_blank" class="view-all-btn">View All</a>
-      </div>
-      <ul class="job-list"></ul>
-  </div>
-  <div class="category" id="intermediate-jobs">
-    <div class="category-header">
-      <h2>10+2 Jobs</h2>
-      <a href="https://allgovernmentjobs.in/intermediate-10-2-jobs" target="_blank" class="view-all-btn">View All</a>
+    <div class="latest-jobs-header">
+      <p>For the most recent updates, please cross-check on 
+        <a href="https://sarkariwallahjob.com/category/new-job/" target="_blank">Latest Jobs</a>
+      </p>
     </div>
-    <ul class="job-list"></ul>
-  </div>    
-  </div>
 
-  <h1 id="video-search">Study Blueprint</h1>
-  <div class="controls-container">
-    <div class="main-controls">
-      <div class="controls">
-        <select id="examSelect">
-          <option value="">Select an Exam</option>
-          <option value="UPSC">UPSC - Civil Services</option>
-          <option value="SSC CGL">SSC CGL</option>
-          <option value="IBPS">IBPS - Banking</option>
-          <option value="RRB">RRB - Railways</option>
-        </select>
-        
-        <div class="checkboxes">
-          <input type="checkbox" id="englishLang" checked>
-          <label for="englishLang">English</label>
-          <input type="checkbox" id="teluguLang">
-          <label for="teluguLang">Telugu</label>
+    <div class="job-categories">
+      <div class="category" id="latest-jobs">
+        <div class="category-header">
+          <h2>Latest Jobs</h2>
         </div>
+        <ul class="job-list"></ul>
       </div>
       
-      <div class="controls">
-        <label class="switch">
-          <input type="checkbox" id="examPreparation">
-          <span class="slider round"></span>
-        </label> Exam Preparation
-
-        <label class="switch">
-          <input type="checkbox" id="crashCourse">
-          <span class="slider round"></span>
-        </label> Crash Course
-
-        <label class="switch">
-          <input type="checkbox" id="strategy">
-          <span class="slider round"></span>
-        </label> Strategy
+      <div class="category" id="central-jobs">
+        <div class="category-header">
+          <h2>Central Jobs</h2>
+          <a href="https://sarkariwallahjob.com/category/central-job/" target="_blank" class="view-all-btn">View All</a>
+        </div>
+        <ul class="job-list"></ul>
       </div>
-    </div>
-    <button aria-label="Fetch Videos" onclick="fetchVideos()">Fetch Videos</button>
-  </div>
+      
+      <div class="category" id="bank-jobs">
+        <div class="category-header">
+          <h2>Bank Jobs</h2>
+          <a href="https://sarkariwallahjob.com/category/bank-job/" target="_blank" class="view-all-btn">View All</a>
+        </div>
+        <ul class="job-list"></ul>
+      </div>
 
-  <ul id="results" style="list-style: none; padding: 0;"></ul>
-</main>
-  <!-- Include YouTube API and the main script for fetching videos and job listings -->
+      <div class="category" id="tenth-Pass-Govt-Jobs">
+        <div class="category-header">
+            <h2>10th Jobs</h2>
+            <a href="https://allgovernmentjobs.in/10th-pass-govt-jobs" target="_blank" class="view-all-btn">View All</a>
+        </div>
+        <ul class="job-list"></ul>
+    </div>
+    <div class="category" id="intermediate-jobs">
+      <div class="category-header">
+        <h2>10+2 Jobs</h2>
+        <a href="https://allgovernmentjobs.in/intermediate-10-2-jobs" target="_blank" class="view-all-btn">View All</a>
+      </div>
+      <ul class="job-list"></ul>
+    </div>    
+    </div>
+
+    <h1 id="video-search">Study Blueprint</h1>
+    <div class="controls-container">
+      <div class="main-controls">
+        <div class="controls">
+          <select id="examSelect">
+            <option value="">Select an Exam</option>
+            <option value="UPSC">UPSC - Civil Services</option>
+            <option value="SSC CGL">SSC CGL</option>
+            <option value="IBPS">IBPS - Banking</option>
+            <option value="RRB">RRB - Railways</option>
+          </select>
+          
+          <div class="checkboxes">
+            <input type="checkbox" id="englishLang" checked>
+            <label for="englishLang">English</label>
+            <input type="checkbox" id="teluguLang">
+            <label for="teluguLang">Telugu</label>
+          </div>
+        </div>
+        
+        <div class="controls">
+          <label class="switch">
+            <input type="checkbox" id="examPreparation">
+            <span class="slider round"></span>
+          </label> Exam Preparation
+
+          <label class="switch">
+            <input type="checkbox" id="crashCourse">
+            <span class="slider round"></span>
+          </label> Crash Course
+
+          <label class="switch">
+            <input type="checkbox" id="strategy">
+            <span class="slider round"></span>
+          </label> Strategy
+        </div>
+      </div>
+      <button aria-label="Fetch Videos" onclick="fetchVideos()">Fetch Videos</button>
+    </div>
+
+    <ul id="results" style="list-style: none; padding: 0;"></ul>
+  </main>
+
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="script.js"></script>
   <script>
@@ -134,13 +132,10 @@
       const navLinks = document.querySelector('.nav-links');
       const menuIcon = document.querySelector('.menu-icon');
       
-      navLinks.classList.toggle('active');
-      
-      if (navLinks.classList.contains('active')) {
-        menuIcon.textContent = '✖'; 
-      } else {
-        menuIcon.textContent = '☰'; 
-      }
+      navLinks.classList.toggle('active'); // Toggles visibility
+
+      // Toggle icon between open (☰) and close (✖)
+      menuIcon.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
     }
   </script>
 </body>

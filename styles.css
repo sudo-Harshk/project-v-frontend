@@ -26,7 +26,6 @@ body {
   color: inherit; 
 }
 
-
 /* Header */
 h1 {
   text-align: center;
@@ -116,21 +115,12 @@ nav {
 
 @media (max-width: 768px) {
   .nav-links {
-    display: none; 
-    flex-direction: column;
+    display: none; /* Hide nav links initially */
+    flex-direction: column; /* Stack links vertically on mobile */
   }
 
   .nav-links.active {
-    display: flex;
-  }
-
-  .nav-links li {
-    margin: 10px 0;
-  }
-
-  .navbar-container {
-    flex-direction: row;
-    align-items: flex-start;
+    display: flex; /* Show nav links when active */
   }
 
   .menu-icon {
@@ -156,28 +146,6 @@ nav {
   display: block;
   object-fit: contain; 
 }
-
-/* Media Queries for Mobile Responsiveness */
-@media (max-width: 768px) {
-  .hero-img {
-    margin: 10px 0; 
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-img {
-    margin: 5px 0; 
-  }
-
-  h1 {
-    font-size: 1.5rem; 
-  }
-}
-
 
 /* State List and Job Categories */
 .state-container {
@@ -232,77 +200,6 @@ nav {
   color: inherit;
   position: relative;
   transition: color 0.3s ease;
-}
-
-/* Underline effect on hover */
-.state-list li a:after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: #007bff;
-  transition: width 0.3s ease;
-}
-
-.state-list li:hover a:after {
-  width: 100%;
-}
-
-/* Text color change on hover */
-.state-list li:hover a {
-  color: #007bff;
-}
-
-/* Optional: Hover effect for the arrow */
-.state-list li:hover:before {
-  filter: brightness(0.8);
-}
-
-/* Media Queries for Responsive Design */
-@media (max-width: 992px) {
-  .state-container {
-    grid-template-columns: repeat(2, minmax(300px, 1fr));
-    max-width: 800px; 
-    gap: 20px;
-  }
-
-  .state-list li {
-    padding-left: 30px; 
-  }
-}
-
-@media (max-width: 768px) {
-  .state-container {
-    grid-template-columns: repeat(2, 1fr); 
-    max-width: 700px; 
-    gap: 15px; 
-  }
-
-  .state-list li {
-    font-size: 0.95rem; 
-    padding-left: 30px; 
-  }
-}
-
-@media (max-width: 361px) {
-  .state-container {
-    grid-template-columns: 1fr; 
-    padding: 10px;
-    max-width: 400px; 
-  }
-
-  .state-list li {
-    font-size: 0.9rem; 
-    padding-left: 25px;
-    white-space: nowrap; 
-  }
-
-  .state-list li:before {
-    width: 15px;
-    height: 15px;
-  }
 }
 
 /* Job Categories */
@@ -429,7 +326,6 @@ nav {
     height: 100px;
     margin-top: 10vh;
     letter-spacing: 10px;
-
 }
 
 /* YouTube Video Search Section */
@@ -475,7 +371,6 @@ select:focus {
   padding: 20px;
 }
 
-/* Styling for each result item (video card) */
 .result-item {
   background: white;
   border: 1px solid #ddd;
@@ -485,12 +380,10 @@ select:focus {
   transition: transform 0.3s ease;
 }
 
-/* Hover effect */
 .result-item:hover {
   transform: translateY(-5px);
 }
 
-/* Styling for the links */
 .result-item a {
   color: black;
   text-decoration: none;
@@ -499,7 +392,6 @@ select:focus {
   height: 100%;
 }
 
-/* Ensure the thumbnail image doesn't stretch */
 .result-item img {
   width: 100%;
   height: auto;
@@ -508,7 +400,6 @@ select:focus {
   max-height: 180px; 
 }
 
-/* Title below the thumbnail */
 .result-item .title {
   padding: 8px;
   background-color: #f9f9f9;
@@ -618,27 +509,8 @@ button:active {
 
 /* Media Queries for Mobile Responsiveness */
 @media (max-width: 768px) {
-  .state-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .job-categories {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .controls {
-    padding-top: 20px;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .checkboxes {
-    justify-content: flex-start;
-  }
-
-  button {
-    width: 100%;
+  .hero-img {
+    margin: 10px 0; 
   }
 
   h1 {
@@ -669,35 +541,46 @@ button:active {
     height: 2px; 
     background-color: #ec724b; 
   }
+  
   #video-search {
     font-size: 40px; 
     line-height: 80px; 
     height: 80px; 
     letter-spacing: 8px; 
   }
-}
-
-/* Media Queries for Extra-Small Screens */
-@media (max-width: 315px) {
+  
   .state-container {
-    grid-template-columns: 1fr;
-    padding: 10px;
-  }
-
-  .job-categories {
-    grid-template-columns: 1fr;
-  }
-
-  #results {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px; 
+    gap: 15px; 
   }
 
   .controls {
+    padding-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .checkboxes {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 400px) {
+  .state-container, .job-categories {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 10px; 
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
   }
 
   h1 {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
   }
 
   h1#job-listings {
@@ -720,9 +603,6 @@ button:active {
     width: 100%; 
     height: 2px;
     background-color: #ec724b;
-    transform: scaleX(1); 
-    transform-origin: bottom right;
-    transition: none; 
   }
   #video-search {
     font-size: 30px; 
