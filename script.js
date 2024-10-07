@@ -83,17 +83,17 @@ function execute(query, fetchButton) {
 }
 
 function displayResults(videos) {
-  const resultsElement = document.getElementById('results');
-  resultsElement.innerHTML = ''; 
+    const resultsElement = document.getElementById('results');
+    resultsElement.innerHTML = ''; 
 
-  if (videos.length === 0) {
-      resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
-      return;
-  }
+    if (videos.length === 0) {
+        resultsElement.innerHTML = '<p>No videos found for the selected criteria. Try different options.</p>';
+        return;
+    }
 
-  console.log("Fetched videos:", videos);
+    console.log("Fetched videos:", videos);
 
-  videos.forEach(video => {
+    videos.forEach(video => {
       if (video.id && video.id.videoId) {
           // Handle video display
           const listItem = createElement('div', ['result-item']);
@@ -105,27 +105,15 @@ function displayResults(videos) {
           link.appendChild(titleDiv);
           listItem.appendChild(link);
           resultsElement.appendChild(listItem);
-      } else if (video.id && video.id.kind === 'youtube#playlist') {
-          // Handle playlist display
-          const listItem = createElement('div', ['result-item playlist']);
-          const link = createElement('a', [], '', { href: `https://www.youtube.com/playlist?list=${video.id.playlistId}`, target: '_blank' });
-          const titleDiv = createElement('div', ['title'], video.snippet.title + ' (Playlist)'); // Indicate it's a playlist
-
-          link.appendChild(titleDiv);
-          listItem.appendChild(link);
-          resultsElement.appendChild(listItem);
       } else {
           console.warn("Video missing ID or videoId:", video);
       }
   });
 
-  if (resultsElement.innerHTML === '') {
-      resultsElement.innerHTML = '<p>No valid videos found for the selected criteria.</p>';
-  }
+    if (resultsElement.innerHTML === '') {
+        resultsElement.innerHTML = '<p>No valid videos found for the selected criteria.</p>';
+    }
 }
-
-
-
 
 // Utility function to create elements
 function createElement(tag, classNames = [], innerHTML = '', attributes = {}) {
