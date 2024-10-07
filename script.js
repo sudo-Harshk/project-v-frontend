@@ -281,20 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Video animation 
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomLetter() {
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  return alphabet[rand(0, alphabet.length - 1)];
-}
-
-function getRandomWord(word) {
-  const text = word.innerHTML;
-  return text.split('').map(char => (char === ' ' ? ' ' : getRandomLetter())).join('');
-}
 
 const word = document.querySelector('#video-search'); 
 let interv;
