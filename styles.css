@@ -354,11 +354,12 @@ nav {
   text-align: center;
   padding: 0 15px;
   text-decoration: none;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .view-all-btn:hover {
   background-color: #e7e9ec;
+  transform: scale(1.05);
 }
 
 .job-list {
