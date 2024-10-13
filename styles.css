@@ -13,6 +13,11 @@ body {
   align-items: center;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 .project-name {
   font-family: "Rubik Glitch", system-ui;
   font-weight: 400;
@@ -246,7 +251,7 @@ nav {
   border-radius: 3px;
   box-shadow: rgba(255, 255, 255, 0.6) 0 1px 0 inset;
   box-sizing: border-box;
-  color: #0f1111;
+  color: #333;
   cursor: pointer;
   font-size: 14px;
   height: 35px;
@@ -255,6 +260,10 @@ nav {
   padding: 0 15px;
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.view-all-btn:focus {
+  outline: 2px solid #007bff;
+  background-color: #e7e9ec;
 }
 
 .view-all-btn:hover {
@@ -487,7 +496,7 @@ button {
   background-color: #3498db;
   border: none;
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
@@ -496,6 +505,9 @@ button {
   transition: all 0.3s ease;
   width: 100%;
   max-width: 200px;
+}
+button:focus {
+  outline: 2px solid #3498db;
 }
 
 button:hover {
